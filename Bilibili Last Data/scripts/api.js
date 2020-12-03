@@ -7,26 +7,26 @@ async function fetchUpVideos(mid, pn = 1, ps = 2) {
 async function fetchVideoStats(bvid) {
   const url = "https://api.bilibili.com/x/web-interface/view?bvid=" + bvid;
   const videoData = await $http.get(url);
-  
+
   let videoStat = videoData.data.data.stat
-//  拿出 pic 地址，放入返回的 object 中
-//  videoStat.pic = $image(videoData.data.data.pic)
-//  videoStat.face = $image(videoData.data.data.owner.face)
+  //  拿出 pic 地址，放入返回的 object 中
+  //  videoStat.pic = $image(videoData.data.data.pic)
+  //  videoStat.face = $image(videoData.data.data.owner.face)
   videoStat.title = videoData.data.data.title;
   videoStat.link = `https://www.bilibili.com/video/${bvid}/`;
   return videoStat
 }
 
 
-async function reloadData(mid){
-  const savedData = $cache.get("last_video_stat");
-  
+async function reloadData(mid) {
+  const savedData = $cache.get(mid + "_stats");
+
   try {
     const videos = await fetchUpVideos(mid = mid);
     const lastBid = videos[0].bvid;
     const lastVideoStat = await fetchVideoStats(bvid = lastBid);
     $cache.setAsync({
-      key: "last_video_stat",
+      key: mid + "_stats",
       value: lastVideoStat
     })
     return lastVideoStat
@@ -34,7 +34,6 @@ async function reloadData(mid){
     console.log(e)
     return savedData;
   }
-  
 }
 
 
