@@ -1,5 +1,10 @@
+const api = require("./api");
 
-function init(videoStats) {
+async function init() {
+  const inputMid = $widget.inputValue;
+  const videoStats = await api.reloadData(inputMid);
+  // const videoStats = await api.reloadData("8047632");
+
   $widget.setTimeline(ctx => {
 
     let widget = null;
@@ -26,9 +31,9 @@ function setOneLable(symbol, text) {
         type: "image",
         props: {
           symbol: {
-           glyph: symbol,
-           size: 19,
-           weight: "regular" 
+            glyph: symbol,
+            size: 19,
+            weight: "regular"
           }
         }
       },
@@ -106,7 +111,7 @@ function mediumWidget(videoStats) {
   let mediumGrid = smallWidget(videoStats);
   // New rows property.
   mediumGrid.props.columns = Array(3).fill({
-      flexible: {
+    flexible: {
       minimum: 15,
       maximum: Infinity
     },
@@ -130,7 +135,8 @@ function mediumWidget(videoStats) {
           lineLimit: 1,
           link: videoStats.link
         }
-      }, mediumGrid
+      },
+      mediumGrid
     ]
   }
 
