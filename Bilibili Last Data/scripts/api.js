@@ -1,50 +1,40 @@
-async function fetchUpVideos(mid, pn = 1, ps = 2) {
-  const url = `https://api.bilibili.com/x/space/arc/search?mid=${mid}&pn=${pn}&ps=${ps}&jsonp=jsonp`;
-  const videosData = await $http.get(url);
-  return videosData.data.data.list.vlist;
+function requestFailed(resp) {
+  return resp == null || resp.response == null || resp.response.statusCode != 200;
 }
-
-async function fetchVideoStats(bvid) {
-  const url = "https://api.bilibili.com/x/web-interface/view?bvid=" + bvid;
-  const videoData = await $http.get(url);
-
-  let videoStat = videoData.data.data.stat
-  //  拿出 pic 地址，放入返回的 object 中
-  //  videoStat.pic = $image(videoData.data.data.pic)
-  //  videoStat.face = $image(videoData.data.data.owner.face)
-  videoStat.title = videoData.data.data.title;
-  videoStat.link = `https://www.bilibili.com/video/${bvid}/`;
-  return videoStat
-}
-
 
 async function reloadData(mid) {
-  const savedData = $cache.get(mid + "_stats");
+  const statsKey = mid + "_stats";
+  const savedStats = $cache.get(statsKey);
 
-  try {
-    const videos = await fetchUpVideos(mid = mid);
-    const lastBid = videos[0].bvid;
-    const lastVideoStat = await fetchVideoStats(bvid = lastBid);
-    $cache.setAsync({
-      key: mid + "_stats",
-      value: lastVideoStat
-    })
-    return lastVideoStat
-  } catch (e) {
-    console.log(e)
-    return savedData;
+  // get Up last video
+  const upDataUrl = `https://api.bilibili.com/x/space/arc/search?mid=${mid}&pn=1&ps=1&jsonp=jsonp`;
+  const upVideosResp = await $http.get(upDataUrl);
+  if (requestFailed(upVideosResp)) {
+    return savedStats;
   }
+  const upVideosList = upVideosResp.data.data.list.vlist;
+  const lastBid = upVideosList[0].bvid;
+
+  // get last video’s data
+  const videoUrl = "https://api.bilibili.com/x/web-interface/view?bvid=" + lastBid;
+  const videoDataResp = await $http.get(videoUrl);
+  if (requestFailed(videoDataResp)) {
+    return savedStats;
+  }
+  const videoData = videoDataResp.data.data;
+
+  // get return values
+  let videoStats = videoData.stat;
+  videoStats.title = videoData.title;
+  videoStats.link = `https://www.bilibili.com/video/${lastBid}/`;
+  $cache.set(statsKey, videoStats);
+  return videoStats;
 }
 
 
-//const videos = await fetchUpVideos(mid = "51019590");
-//const lastBid = videos[0].bvid
-//console.info(lastBid)
-
-//const lastVideoStat = await fetchVideoStats(bvid = lastBid);
-//console.info(lastVideoStat)
+//const videoStat = await reloadData("51019590");
+//console.log(videoStat);
 
 module.exports = {
   reloadData: reloadData
 }
-
