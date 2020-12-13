@@ -6,6 +6,11 @@ async function reloadData(mid) {
   const statsKey = mid + "_stats";
   const savedStats = $cache.get(statsKey);
 
+  // return saved data if no network connection.
+  if ($device.networkType === 0) {
+    return savedStats;
+  }
+
   // get Up last video
   const upDataUrl = `https://api.bilibili.com/x/space/arc/search?mid=${mid}&pn=1&ps=1&jsonp=jsonp`;
   const upVideosResp = await $http.get(upDataUrl);
