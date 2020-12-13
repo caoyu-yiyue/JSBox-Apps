@@ -7,13 +7,11 @@ async function init() {
 
   $widget.setTimeline(ctx => {
 
-    let widget = null;
     if (ctx.family === $widgetFamily.small) {
-      widget = smallWidget(videoStats);
+      return smallWidget(videoStats);
     } else if (ctx.family === $widgetFamily.medium) {
-      widget = mediumWidget(videoStats);
+      return mediumWidget(videoStats);
     }
-    return widget;
 
   });
 }
@@ -143,7 +141,6 @@ function mediumWidget(videoStats) {
   return mediumView
 
 }
-
 
 module.exports = {
   init: init
