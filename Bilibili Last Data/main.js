@@ -1,2 +1,2 @@
-const widget = require("./scripts/widget");
+const widget = require("scripts/widget");
 widget.init();
