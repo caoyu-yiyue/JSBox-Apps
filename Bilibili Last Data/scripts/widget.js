@@ -78,7 +78,6 @@ function smallWidget(videoStats) {
       }),
       spacing: 20,
       alignment: $widget.horizontalAlignment.center,
-      link: videoStats.link,
       widgetURL: videoStats.link
     },
     views: [viewLable, likeLable, coinLable, favLable, replyLable, shareLable]
@@ -144,4 +143,3 @@ async function init() {
 module.exports = {
   init: init
 }
-
