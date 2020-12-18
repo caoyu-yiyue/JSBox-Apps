@@ -99,6 +99,7 @@ function mediumWidget(videoStats) {
     alignment: $widget.alignment.leading
   })
   mediumGrid.props.spacing = 15;
+  mediumGrid.widgetURL = null;
 
   const mediumView = {
     type: "vstack",
