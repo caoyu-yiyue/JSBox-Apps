@@ -1,22 +1,5 @@
 const api = require("./api");
 
-async function init() {
-  const inputMid = $widget.inputValue;
-  const videoStats = await api.reloadData(inputMid);
-  // const videoStats = await api.reloadData("8047632");
-
-  $widget.setTimeline(ctx => {
-
-    if (ctx.family === $widgetFamily.small) {
-      return smallWidget(videoStats);
-    } else if (ctx.family === $widgetFamily.medium) {
-      return mediumWidget(videoStats);
-    }
-
-  });
-}
-
-
 function setOneLable(symbol, text) {
   const statPart = {
     type: "hstack",
@@ -140,6 +123,22 @@ function mediumWidget(videoStats) {
 
   return mediumView
 
+}
+
+async function init() {
+  const inputMid = $widget.inputValue;
+  const videoStats = await api.reloadData(inputMid);
+  // const videoStats = await api.reloadData("8047632");
+
+  $widget.setTimeline(ctx => {
+
+    if (ctx.family === $widgetFamily.small) {
+      return smallWidget(videoStats);
+    } else if (ctx.family === $widgetFamily.medium) {
+      return mediumWidget(videoStats);
+    }
+
+  });
 }
 
 module.exports = {
